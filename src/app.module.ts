@@ -7,10 +7,11 @@ import { AnyExceptionFilter } from './http-exception.filter';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { CastErrorFilter } from './cast-error.filter';
 import { config } from 'dotenv';
+import { CategoryModule } from './category/category.module';
 config({ path: 'config.env' });
 
 @Module({
-  imports: [mongooseConfig(), UserModule],
+  imports: [mongooseConfig(), UserModule, CategoryModule],
   controllers: [AppController],
   providers: [
     AppService,
