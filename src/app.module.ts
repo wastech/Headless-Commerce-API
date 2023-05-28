@@ -8,10 +8,11 @@ import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { CastErrorFilter } from './cast-error.filter';
 import { config } from 'dotenv';
 import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 config({ path: 'config.env' });
 
 @Module({
-  imports: [mongooseConfig(), UserModule, CategoryModule],
+  imports: [mongooseConfig(), UserModule, CategoryModule, ProductModule],
   controllers: [AppController],
   providers: [
     AppService,

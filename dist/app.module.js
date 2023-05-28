@@ -17,12 +17,13 @@ const core_1 = require("@nestjs/core");
 const cast_error_filter_1 = require("./cast-error.filter");
 const dotenv_1 = require("dotenv");
 const category_module_1 = require("./category/category.module");
+const product_module_1 = require("./product/product.module");
 (0, dotenv_1.config)({ path: 'config.env' });
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, mongoose_config_1.mongooseConfig)(), user_module_1.UserModule, category_module_1.CategoryModule],
+        imports: [(0, mongoose_config_1.mongooseConfig)(), user_module_1.UserModule, category_module_1.CategoryModule, product_module_1.ProductModule],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
