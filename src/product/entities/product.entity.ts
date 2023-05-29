@@ -14,11 +14,20 @@ export class Product extends Document {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   price: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
+  countInStock: number;
+
+  @Prop({ required: true, default: 0 })
   instock: number;
+
+  @Prop({ required: true, default: 0 })
+  numReviews: number;
+
+  @Prop({ required: true })
+  brand: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
