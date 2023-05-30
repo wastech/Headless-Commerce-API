@@ -10,7 +10,7 @@ interface Review {
   comment: string;
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product extends Document {
   @Prop({ required: true })
   title: string;

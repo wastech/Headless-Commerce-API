@@ -27,8 +27,25 @@ export class ProductController {
   }
 
   @Public()
-  @Get(':categorySlug')
+  @Get()
   async getAllProducts(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    // @Query('sortBy') sortBy: string,
+    // @Query('sortOrder') sortOrder: string,
+  ) {
+    const products = await this.productService.findAll(
+      page,
+      limit,
+      // sortBy,
+      // sortOrder,
+    );
+    return products;
+  }
+
+  @Public()
+  @Get(':categorySlug')
+  async getFilters(
     @Param('categorySlug') categorySlug: string,
     @Query('minPrice') minPrice?: number,
     @Query('maxPrice') maxPrice?: number,
@@ -47,7 +64,7 @@ export class ProductController {
       size,
     };
 
-    const products = await this.productService.findAll(
+    const products = await this.productService.productFilter(
       categorySlug,
       filters,
       page,

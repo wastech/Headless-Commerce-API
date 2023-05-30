@@ -18,12 +18,13 @@ const cast_error_filter_1 = require("./cast-error.filter");
 const dotenv_1 = require("dotenv");
 const category_module_1 = require("./category/category.module");
 const product_module_1 = require("./product/product.module");
+const review_module_1 = require("./review/review.module");
 (0, dotenv_1.config)({ path: 'config.env' });
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, mongoose_config_1.mongooseConfig)(), user_module_1.UserModule, category_module_1.CategoryModule, product_module_1.ProductModule],
+        imports: [(0, mongoose_config_1.mongooseConfig)(), user_module_1.UserModule, category_module_1.CategoryModule, product_module_1.ProductModule, review_module_1.ReviewModule],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,

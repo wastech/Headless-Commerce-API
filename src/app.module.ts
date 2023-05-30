@@ -9,10 +9,11 @@ import { CastErrorFilter } from './cast-error.filter';
 import { config } from 'dotenv';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
+import { ReviewModule } from './review/review.module';
 config({ path: 'config.env' });
 
 @Module({
-  imports: [mongooseConfig(), UserModule, CategoryModule, ProductModule],
+  imports: [mongooseConfig(), UserModule, CategoryModule, ProductModule, ReviewModule],
   controllers: [AppController],
   providers: [
     AppService,

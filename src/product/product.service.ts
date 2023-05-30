@@ -27,6 +27,27 @@ export class ProductService {
   }
 
   async findAll(
+    page: number,
+    limit: number,
+    // sortBy: string,
+    // sortOrder: string,
+  ): Promise<Product[]> {
+    // const sortOptions = {};
+    // sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    const startIndex = (page - 1) * limit;
+
+    const products = await this.productModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    return products;
+  }
+
+  async productFilter(
     categorySlug: string,
     filters: {
       price?: { minPrice: number; maxPrice: number };
