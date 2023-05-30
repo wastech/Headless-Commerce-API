@@ -27,6 +27,7 @@ AppModule = __decorate([
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
+            user_module_1.UserModule,
             {
                 provide: core_1.APP_FILTER,
                 useClass: http_exception_filter_1.AnyExceptionFilter,

@@ -1,33 +1,48 @@
 import {
   IsString,
   IsNumber,
-  IsOptional,
-  IsArray,
+  IsBoolean,
+  // IsMongoId,
   ValidateNested,
+  IsArray,
+  // ArrayNotEmpty,
 } from 'class-validator';
+
+class ReviewDto {
+  @IsString()
+  user: string;
+  @IsString()
+  comment: string;
+}
 
 export class CreateProductDto {
   @IsString()
-  public title: string;
+  category: string;
 
   @IsString()
-  public image: string;
+  title: string;
 
   @IsString()
-  public description: string;
+  description: string;
 
   @IsNumber()
-  public price: number;
+  price: number;
 
   @IsNumber()
-  public countInStock: number;
+  numReviews: number;
+
+  @IsBoolean()
+  inStock: boolean;
+
+  @IsString()
+  image: string;
+
+  createdBy: string;
+
+  @ValidateNested({ each: true })
+  @IsArray()
+  reviews: ReviewDto[];
 
   @IsNumber()
-  public instock: number;
-
-  @IsNumber()
-  public numReviews: number;
-
-  @IsNumber()
-  public category: string;
+  rating: number;
 }

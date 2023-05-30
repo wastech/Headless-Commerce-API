@@ -16,6 +16,7 @@ config({ path: 'config.env' });
   controllers: [AppController],
   providers: [
     AppService,
+    UserModule,
     {
       provide: APP_FILTER,
       useClass: AnyExceptionFilter,
