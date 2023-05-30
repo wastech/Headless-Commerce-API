@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -83,5 +83,24 @@ export class ProductService {
       .exec();
 
     return products;
+  }
+
+  async findOneByIdAndSlug(
+    productId: string,
+    productSlug: string,
+  ): Promise<Product> {
+    const product = await this.productModel
+      .findOne({
+        $and: [{ _id: productId }, { slug: productSlug }],
+      })
+      .populate('category', 'name')
+      .populate('createdBy', 'name')
+      .exec();
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return product;
   }
 }

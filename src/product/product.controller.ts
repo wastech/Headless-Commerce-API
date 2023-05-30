@@ -56,4 +56,17 @@ export class ProductController {
 
     return products;
   }
+
+  @Public()
+  @Get(':productId/:productSlug')
+  async getProductByIdAndSlug(
+    @Param('productId') productId: string,
+    @Param('productSlug') productSlug: string,
+  ) {
+    const product = await this.productService.findOneByIdAndSlug(
+      productId,
+      productSlug,
+    );
+    return product;
+  }
 }
