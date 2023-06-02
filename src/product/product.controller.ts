@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   ParseArrayPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -85,5 +86,17 @@ export class ProductController {
       productSlug,
     );
     return product;
+  }
+
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: string): Promise<void> {
+    try {
+      await this.productService.deleteProduct(id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Product not found');
+      }
+      throw error;
+    }
   }
 }

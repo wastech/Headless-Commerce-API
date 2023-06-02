@@ -6,12 +6,14 @@ import { Model } from 'mongoose';
 import { Product } from './entities/product.entity';
 import { JwtPayload } from '../user/interfaces/jwt-payload.interface';
 import { Category } from '../category/entities/category.entity';
+import { Review } from 'src/review/entities/review.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private readonly productModel: Model<Product>,
     @InjectModel(Category.name) private readonly categoryModel: Model<Category>,
+    @InjectModel(Review.name) private readonly reviewModel: Model<Review>,
   ) {}
 
   async createProduct(
@@ -125,5 +127,15 @@ export class ProductService {
     console.log('product', product);
 
     return product;
+  }
+
+  async deleteProduct(productId: string): Promise<void> {
+    const product = await this.productModel.findByIdAndDelete(productId);
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    // Delete associated reviews
+    await this.reviewModel.deleteMany({ productId });
   }
 }

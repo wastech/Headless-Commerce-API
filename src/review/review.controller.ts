@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Req, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Param,
+  NotFoundException,
+  Delete,
+} from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { Review } from './entities/review.entity';
@@ -22,5 +30,17 @@ export class ReviewController {
       req.user,
     );
     return { message: 'Review submitted successfully', product };
+  }
+
+  @Delete(':id/reviews')
+  async deleteReview(@Param('id') id: string): Promise<void> {
+    try {
+      await this.reviewService.deleteReview(id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Review not found');
+      }
+      throw error;
+    }
   }
 }
