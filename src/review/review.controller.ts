@@ -1,34 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Req, Param } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { Review } from './entities/review.entity';
+import { Public } from '../user/decorators/public.decorator';
 
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewService.create(createReviewDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.reviewService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
-    return this.reviewService.update(+id, updateReviewDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reviewService.remove(+id);
+  @Post(':id/reviews')
+  async submitReview(
+    @Param('id') productId: string,
+    @Body('rating') rating: number,
+    @Body('comment') comment: string,
+    @Req() req,
+  ) {
+    const product = await this.reviewService.submitReview(
+      productId,
+      rating,
+      comment,
+      req.user,
+    );
+    return { message: 'Review submitted successfully', product };
   }
 }

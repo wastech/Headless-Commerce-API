@@ -1,14 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Category } from '../../category/entities/category.entity';
 import { User } from '../../user/entities/user.entity';
+import { Review } from '../../review/entities/review.entity';
 import slugify from 'slugify';
 import * as mongoose from 'mongoose';
-
-interface Review {
-  user: Types.ObjectId | User;
-  comment: string;
-}
 
 @Schema({ timestamps: true })
 export class Product extends Document {
@@ -33,39 +29,29 @@ export class Product extends Document {
   @Prop({ required: true, default: 0 })
   instock: number;
 
-  @Prop({ required: true, default: 0 })
-  numReviews: number;
-
-  @Prop({ required: true })
-  brand: string;
-
-  // @Prop({
-  //   type: MongooseSchema.Types.ObjectId,
-  //   ref: 'Category',
-  //   required: true,
-  // })
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true,
-  })
-  category: Category;
-
-  @Prop({ type: [Object], default: [] })
-  reviews: Review[];
+  @Prop({ default: 0 })
+  reviewCount: number;
 
   @Prop({ default: 0 })
   rating: number;
 
-  // @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({ required: true })
+  brand: string;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] })
+  reviews: Review[];
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+  })
+  category: Category;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   })
   createdBy: User;
-
-  // ... other product fields
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product);

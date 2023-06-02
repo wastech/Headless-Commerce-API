@@ -13,7 +13,13 @@ import { ReviewModule } from './review/review.module';
 config({ path: 'config.env' });
 
 @Module({
-  imports: [mongooseConfig(), UserModule, CategoryModule, ProductModule, ReviewModule],
+  imports: [
+    mongooseConfig(),
+    UserModule,
+    CategoryModule,
+    ProductModule,
+    ReviewModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

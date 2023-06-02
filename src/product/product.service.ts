@@ -116,11 +116,13 @@ export class ProductService {
       })
       .populate('category', 'name')
       .populate('createdBy', 'name')
+      .populate('reviews')
       .exec();
 
     if (!product) {
       throw new NotFoundException('Product not found');
     }
+    console.log('product', product);
 
     return product;
   }
