@@ -7,6 +7,7 @@ import { Product } from './entities/product.entity';
 import { JwtPayload } from '../user/interfaces/jwt-payload.interface';
 import { Category } from '../category/entities/category.entity';
 import { Review } from 'src/review/entities/review.entity';
+import slugify from 'slugify';
 
 @Injectable()
 export class ProductService {
@@ -108,6 +109,11 @@ export class ProductService {
     return products;
   }
 
+  async getProductById(productId: string): Promise<Product> {
+    const product = await this.productModel.findById(productId).exec();
+    return product;
+  }
+
   async findOneByIdAndSlug(
     productId: string,
     productSlug: string,
@@ -127,6 +133,36 @@ export class ProductService {
     console.log('product', product);
 
     return product;
+  }
+
+  async findSimilarProducts(product: Product): Promise<Product[]> {
+    const similarBlogs = await this.productModel
+      .find({
+        category: product.category,
+        _id: { $ne: product._id }, // exclude the current blog post from the results
+      })
+      .sort({ createdAt: -1 }) // sort by creation date in descending order
+      .limit(3) // limit to a maximum of 3 similar posts
+      .exec();
+
+    return similarBlogs;
+  }
+
+  async updatePost(
+    id: string,
+    updateProductDto: Partial<UpdateProductDto>,
+  ): Promise<Product> {
+    const options = { new: true }; // Return the updated document
+
+    // Check if the title has been updated
+    if (updateProductDto.title) {
+      // If the title has been updated, generate a new slug based on the updated title
+      updateProductDto.slug = slugify(updateProductDto.title, { lower: true });
+    }
+
+    return this.productModel
+      .findByIdAndUpdate(id, updateProductDto, options)
+      .exec();
   }
 
   async deleteProduct(productId: string): Promise<void> {

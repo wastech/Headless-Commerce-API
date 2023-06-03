@@ -8,15 +8,19 @@ import {
   Delete,
   Query,
   Req,
-  ParseIntPipe,
-  DefaultValuePipe,
-  ParseArrayPipe,
+  Request,
+  UseGuards,
+  UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Public } from '../user/decorators/public.decorator';
+import { Product } from './entities/product.entity';
+import { RolesGuard } from '../user/roles.guard';
+import { Role } from '../user/entities/user.entity';
+import { Roles } from '../user/decorators/roles.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -73,6 +77,54 @@ export class ProductController {
     );
 
     return products;
+  }
+
+  //@Public()
+  @Patch(':id/update-product')
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.Admin, Role.Guest)
+  async updatePost(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Request() req: any,
+  ) {
+    const product = await this.productService.getProductById(id);
+    if (!product) {
+      throw new NotFoundException(`Blog post with ID ${id} not found`);
+    }
+
+    const user = req.user;
+    console.log('object', user);
+    // if (
+    //   product.createdBy.toString() !== user._id.toString() &&
+    //   user.role !== 'admin'
+    // ) {
+    //   throw new UnauthorizedException(
+    //     `You are not authorized to update this post`,
+    //   );
+    // }
+
+    const updatedProduct = await this.productService.updatePost(
+      id,
+      updateProductDto,
+    );
+    return {
+      message: `Blog post with ID ${id} updated successfully`,
+      post: updatedProduct,
+    };
+  }
+
+  @Public()
+  @Get(':id/similars')
+  async findSimilarBlogs(@Param('id') id: string): Promise<Product[]> {
+    const product = await this.productService.getProductById(id);
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const similarBlogs = await this.productService.findSimilarProducts(product);
+
+    return similarBlogs;
   }
 
   @Public()

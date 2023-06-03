@@ -13,6 +13,8 @@ class ReviewDto {
   user: string;
   @IsString()
   comment: string;
+  @IsNumber()
+  rating: number;
 }
 
 export class CreateProductDto {
@@ -21,6 +23,9 @@ export class CreateProductDto {
 
   @IsString()
   title: string;
+
+  @IsString()
+  slug: string;
 
   @IsString()
   description: string;
@@ -37,7 +42,7 @@ export class CreateProductDto {
   @IsString()
   image: string;
 
-  createdBy: string;
+  readonly createdBy: string;
 
   @ValidateNested({ each: true })
   @IsArray()
