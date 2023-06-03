@@ -128,6 +128,12 @@ export class ProductController {
   }
 
   @Public()
+  @Get('user/:userId')
+  getProductsByUser(@Param('userId') userId: string) {
+    return this.productService.getProductsByUser(userId);
+  }
+
+  @Public()
   @Get(':productId/:productSlug')
   async getProductByIdAndSlug(
     @Param('productId') productId: string,

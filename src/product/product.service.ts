@@ -174,4 +174,8 @@ export class ProductService {
     // Delete associated reviews
     await this.reviewModel.deleteMany({ productId });
   }
+
+  async getProductsByUser(createdBy: string): Promise<Product[]> {
+    return this.productModel.find({ createdBy }).exec();
+  }
 }
