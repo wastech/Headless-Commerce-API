@@ -130,7 +130,6 @@ export class ProductService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    console.log('product', product);
 
     return product;
   }
@@ -175,7 +174,7 @@ export class ProductService {
     await this.reviewModel.deleteMany({ productId });
   }
 
-  async getProductsByUser(createdBy: string): Promise<Product[]> {
-    return this.productModel.find({ createdBy }).exec();
+  async getProductsByUser(userId: string): Promise<Product[]> {
+    return this.productModel.find({ createdBy: userId }).exec();
   }
 }

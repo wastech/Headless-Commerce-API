@@ -31,6 +31,12 @@ export class ProductController {
     return this.productService.createProduct(createProductDto, req.user);
   }
 
+  @Get('my-products')
+  async getMyProducts(@Request() req) {
+    const userId = req.user._id; // Retrieve the user ID from the request object
+    return this.productService.getProductsByUser(userId);
+  }
+
   @Public()
   @Get()
   async getAllProducts(
@@ -46,6 +52,40 @@ export class ProductController {
       // sortOrder,
     );
     return products;
+  }
+
+  //@Public()
+  @Patch(':id/update-product')
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.Admin, Role.Guest)
+  async updatePost(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Request() req: any,
+  ) {
+    const product = await this.productService.getProductById(id);
+    if (!product) {
+      throw new NotFoundException(`Blog post with ID ${id} not found`);
+    }
+
+    const user = req.user;
+    if (
+      product.createdBy.toString() !== user._id.toString() &&
+      user.role !== 'admin'
+    ) {
+      throw new UnauthorizedException(
+        `You are not authorized to update this post`,
+      );
+    }
+
+    const updatedProduct = await this.productService.updatePost(
+      id,
+      updateProductDto,
+    );
+    return {
+      message: `Blog post with ID ${id} updated successfully`,
+      post: updatedProduct,
+    };
   }
 
   @Public()
@@ -77,41 +117,6 @@ export class ProductController {
     );
 
     return products;
-  }
-
-  //@Public()
-  @Patch(':id/update-product')
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.Admin, Role.Guest)
-  async updatePost(
-    @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
-    @Request() req: any,
-  ) {
-    const product = await this.productService.getProductById(id);
-    if (!product) {
-      throw new NotFoundException(`Blog post with ID ${id} not found`);
-    }
-
-    const user = req.user;
-    console.log('object', user);
-    // if (
-    //   product.createdBy.toString() !== user._id.toString() &&
-    //   user.role !== 'admin'
-    // ) {
-    //   throw new UnauthorizedException(
-    //     `You are not authorized to update this post`,
-    //   );
-    // }
-
-    const updatedProduct = await this.productService.updatePost(
-      id,
-      updateProductDto,
-    );
-    return {
-      message: `Blog post with ID ${id} updated successfully`,
-      post: updatedProduct,
-    };
   }
 
   @Public()
