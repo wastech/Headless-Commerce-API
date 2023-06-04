@@ -19,6 +19,7 @@ const dotenv_1 = require("dotenv");
 const category_module_1 = require("./category/category.module");
 const product_module_1 = require("./product/product.module");
 const review_module_1 = require("./review/review.module");
+const order_module_1 = require("./order/order.module");
 (0, dotenv_1.config)({ path: 'config.env' });
 let AppModule = class AppModule {
 };
@@ -30,6 +31,7 @@ AppModule = __decorate([
             category_module_1.CategoryModule,
             product_module_1.ProductModule,
             review_module_1.ReviewModule,
+            order_module_1.OrderModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
