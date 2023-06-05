@@ -45,4 +45,13 @@ export class OrderController {
   ) {
     return this.orderService.createOrderItem(orderId, orderItemDto);
   }
+
+  @Get('/user/:userId')
+  async getOrdersByUser(
+    @Param('userId') userId: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<any> {
+    return this.orderService.getOrdersByUser(userId, page, limit);
+  }
 }

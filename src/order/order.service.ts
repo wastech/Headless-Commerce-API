@@ -74,4 +74,33 @@ export class OrderService {
       ])
       .exec();
   }
+
+  async getOrdersByUser(
+    userId: string,
+    page: number,
+    limit: number,
+  ): Promise<any> {
+    const startIndex = (page - 1) * limit;
+
+    const totalOrders = await this.orderModel
+      .countDocuments({ user: userId })
+      .exec();
+
+    const orders = await this.orderModel
+      .find({ user: userId })
+      .sort({ createdAt: 'desc' })
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    const groupedOrders = await this.groupOrdersByDate();
+
+    return {
+      orders,
+      totalPages,
+      groupedOrders,
+    };
+  }
 }
