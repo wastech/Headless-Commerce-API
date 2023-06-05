@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { CreateOrderDto, OrderItemDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CreateOrderItemDto } from './dto/create.orderitem.dto';
@@ -102,5 +106,21 @@ export class OrderService {
       totalPages,
       groupedOrders,
     };
+  }
+
+  async deleteOrder(orderId: string, userId: string): Promise<void> {
+    const order = await this.orderModel.findById(orderId).exec();
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.user.toString() !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this order',
+      );
+    }
+
+    await this.orderModel.deleteOne({ _id: orderId }).exec();
   }
 }

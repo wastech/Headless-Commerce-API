@@ -37,6 +37,15 @@ export class OrderController {
   ) {
     return this.orderService.getOrders(page, limit);
   }
+  @Delete(':orderId')
+  async deleteOrder(
+    @Param('orderId') orderId: string,
+    @Req() req,
+  ): Promise<void> {
+    const userId = req.user.id; // Assuming you have implemented authentication
+
+    await this.orderService.deleteOrder(orderId, userId);
+  }
 
   @Post(':orderId/orderItems')
   async createOrderItem(
