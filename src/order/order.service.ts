@@ -32,4 +32,46 @@ export class OrderService {
     order.orderItems.push(orderItemDto);
     return order.save();
   }
+
+  async getOrders(page: number, limit: number): Promise<any> {
+    const startIndex = (page - 1) * limit;
+    // const endIndex = page * limit;
+
+    const totalOrders = await this.orderModel.countDocuments().exec();
+
+    const orders = await this.orderModel
+      .find()
+      .sort({ createdAt: 'desc' })
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    const groupedOrders = await this.groupOrdersByDate();
+
+    return {
+      orders,
+      totalPages,
+      groupedOrders,
+    };
+  }
+  async groupOrdersByDate(): Promise<any> {
+    return this.orderModel
+      .aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+            sales: { $sum: '$totalPrice' },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+      ])
+      .exec();
+  }
 }
