@@ -1,26 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateOrderDto, OrderItemDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderItemDto } from './dto/create.orderitem.dto';
 
+import { Order, OrderDocument } from './entities/order.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { JwtPayload } from '../user/interfaces/jwt-payload.interface';
+import { Product } from '../product/entities/product.entity';
+import { OrderItem, OrderItemDocument } from './entities/order-item.entity';
 @Injectable()
 export class OrderService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+  ) {}
+
+  async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
+    const createdOrder = new this.orderModel(createOrderDto);
+    return createdOrder.save();
   }
 
-  findAll() {
-    return `This action returns all order`;
-  }
+  async createOrderItem(
+    orderId: string,
+    orderItemDto: OrderItemDto,
+  ): Promise<Order> {
+    const order = await this.orderModel.findById(orderId);
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+    order.orderItems.push(orderItemDto);
+    return order.save();
   }
 }
