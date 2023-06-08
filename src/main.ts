@@ -2,11 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CustomValidationPipe } from './custom-validation.pipe';
 import { config } from 'dotenv';
+import * as compression from 'compression';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   config({ path: 'config.env' });
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+  app.use(compression());
   // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
 
